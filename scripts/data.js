@@ -12,6 +12,7 @@ class GameData {
       SHELVE: 'Shelve',
       STOVE: 'Stove'
     };
+    this.TIME = 15; // Seconds
   }
 }
 

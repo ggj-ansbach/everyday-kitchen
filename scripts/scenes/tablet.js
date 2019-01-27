@@ -1,11 +1,15 @@
 class TabletScene extends Phaser.Scene {
   constructor () {
     super({key: game_data.scene_list.TABLET});
+    this.clock;
+    this.text;
+    this.parentPlayer
   }
 
   onDown () {
     console.log("Going back to MainScene");
-    this.scene.start(game_data.scene_list.MAIN, {});
+    this.parentPlayer.y -= 20 // Move player out of collision area
+    this.scene.switch(game_data.scene_list.MAIN);
   }
 
   preload () {
@@ -14,7 +18,9 @@ class TabletScene extends Phaser.Scene {
     this.load.image('note', '/assets/images/objects/note.png');
   }
 
-  create () {
+  create (data) {
+    this.parentPlayer = data.player;
+    // Adding tablet and note as a group
     let blocks = this.physics.add.staticGroup();
     blocks.create(400 , 300, 'tablet');
     let note = blocks.create(270, 294, 'note').setScale(0.17, 0.15); // sprite is so big

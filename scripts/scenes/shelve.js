@@ -5,8 +5,7 @@ class ShelveScene extends Phaser.Scene {
 
   onDown () {
     console.log("Going back to MainScene");
-    this.scene.start(game_data.scene_list.MAIN, {});
-    game.sound.stopAll();
+    this.scene.switch(game_data.scene_list.MAIN);
   }
 
   preload () {

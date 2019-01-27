@@ -17,8 +17,38 @@ let timer;
 class MainScene extends Phaser.Scene {
   constructor() {
     super({key: game_data.scene_list.MAIN});
+    this.player;
+    this.score;
+    this.time_left;
   }
 
+<<<<<<< HEAD
+  openITablet(sound, data) {
+    sound.play();
+    this.scene.start(game_data.scene_list.TABLET, data); // sends current scene into sleep and loads sleeping one
+    
+    let self = this; // This is for passing `this` into clock functions
+    let time = game_data.TIME;
+    let timer = setInterval(() => {
+      time--;
+      self.time_left.setText(time) + ' s';
+      self.registry.set('time_left', time);
+      if (time <= 0) {
+          clearInterval(timer);
+      }
+      }, 1000);
+    
+  }
+
+  openIShelve(sound, data) {
+    sound.play();
+    this.scene.switch(game_data.scene_list.SHELVE, {});
+  }
+
+  openIStove() {
+    this.scene.sleep();
+    this.scene.run(game_data.scene_list.STOVE, {});
+=======
   openITablet(sound) {
     this.input.keyboard.on("keyup_SPACE", () => {
       game.sound.stopAll();
@@ -41,6 +71,7 @@ class MainScene extends Phaser.Scene {
       sound.play();
       this.scene.start(game_data.scene_list.STOVE, {});
     }, this);
+>>>>>>> a3883e4d14fd61b63a61f24cf1bc838794a1f4f9
   }
 
   preload() {
@@ -62,6 +93,12 @@ class MainScene extends Phaser.Scene {
   }
 
   create() {
+    // Set global data to share between scenes
+    this.registry.set('time_left', game_data.TIME);
+    this.registry.set('score', 0);
+    // this.registry.events.on('changeddata', this.updateHUD, this);
+    
+    
     // Create a group of kitchen objects:
     blocks = this.physics.add.staticGroup();
     blocks.create(400, 300, 'floor');
@@ -73,6 +110,13 @@ class MainScene extends Phaser.Scene {
     blocks.create(400, 508, 'hud');
     
     // Add time text
+<<<<<<< HEAD
+    let bmp_text = this.add.bitmapText(100, 450, 'carrier_command','TIME', 20);
+    this.time_left = this.add.bitmapText(100, 480, 'carrier_command',this.registry.get('time_left') + ' s', 20);
+
+    // Player settings:
+    this.player = this.physics.add.sprite(150, 325, 'chef').setScale(1.25);
+=======
     timerHeader = this.add.bitmapText(105, 460, 'carrier_command', 'TIME', 20);
     timerInitValue = 15;
     timerValue = this.add.bitmapText(100, 510, 'carrier_command', timerInitValue, 40);
@@ -80,9 +124,10 @@ class MainScene extends Phaser.Scene {
 
     // Player settings:
     player = this.physics.add.sprite(game_data.coordinatesX, game_data.coordinatesY, 'chef').setScale(1.25);
+>>>>>>> a3883e4d14fd61b63a61f24cf1bc838794a1f4f9
     // items = this.add.sprite(100, 220, 'items');
-    player.body.allowGravity = false;
-    player.setCollideWorldBounds(true);
+    this.player.body.allowGravity = false;
+    this.player.setCollideWorldBounds(true);
 
     shelve_open = this.sound.add('shelve_open');
     tablet_open = this.sound.add('tablet_open');
@@ -98,21 +143,21 @@ class MainScene extends Phaser.Scene {
     this.anims.create({
       key: 'up',
       frames: this.anims.generateFrameNumbers('chef', {start: 12, end: 15}),
-      frameRate: 10,
+      frameRate: 5,
       repeat: -1
     });
 
     this.anims.create({
       key: 'down',
       frames: this.anims.generateFrameNumbers('chef', {start: 0,  end: 3}),
-      frameRate: 10,
+      frameRate: 5,
       repeat: -1
     });
 
     this.anims.create({
       key: 'left',
       frames: this.anims.generateFrameNumbers('chef', {start: 4, end: 7}),
-      frameRate: 10,
+      frameRate: 5,
       repeat: -1
     });
 
@@ -131,7 +176,7 @@ class MainScene extends Phaser.Scene {
 
 
     // Group player and blocks for collision:
-    this.physics.add.collider(player, blocks);
+    this.physics.add.collider(this.player, blocks);
 
     itablet = this.physics.add.group({
       key: 'itablet',
@@ -158,9 +203,15 @@ class MainScene extends Phaser.Scene {
     });
 
     // Callback for player and invisible objects:
+<<<<<<< HEAD
+    this.physics.add.collider(this.player, itablet, this.openITablet.bind(this, tablet_open, {player: this.player})); // (scope, sound_file, data)
+    this.physics.add.collider(this.player, ishelve, this.openIShelve.bind(this, shelve_open, {player: this.player}));
+    this.physics.add.collider(this.player, istove, this.openIStove.bind(this, '', {player: this.player})); // Need to work here
+=======
     this.physics.add.collider(player, itablet, this.openITablet.bind(this, tablet_open));
     this.physics.add.collider(player, ishelve, this.openIShelve.bind(this, shelve_open));
     this.physics.add.collider(player, istove, this.openIStove.bind(this, stove_open));
+>>>>>>> a3883e4d14fd61b63a61f24cf1bc838794a1f4f9
 
     // Define controls:
     controls = this.input.keyboard.createCursorKeys();
@@ -168,25 +219,25 @@ class MainScene extends Phaser.Scene {
 
   update() {
     if (controls.up.isDown) {
-      player.setVelocityY(-360);
-      player.setVelocityX(0);
-      player.anims.play('up', true);
+      this.player.setVelocityY(-360);
+      this.player.setVelocityX(0);
+      this.player.anims.play('up', true);
     } else if (controls.down.isDown) {
-      player.setVelocityY(360);
-      player.setVelocityX(0);
-      player.anims.play('down', true);
+      this.player.setVelocityY(360);
+      this.player.setVelocityX(0);
+      this.player.anims.play('down', true);
     } else if (controls.left.isDown) {
-      player.setVelocityX(-360);
-      player.setVelocityY(0);
-      player.anims.play('left', true);
+      this.player.setVelocityX(-360);
+      this.player.setVelocityY(0);
+      this.player.anims.play('left', true);
     } else if (controls.right.isDown) {
-      player.setVelocityX(360);
-      player.setVelocityY(0);
-      player.anims.play('right', true);
+      this.player.setVelocityX(360);
+      this.player.setVelocityY(0);
+      this.player.anims.play('right', true);
     } else {
-      player.setVelocityX(0);
-      player.setVelocityY(0);
-      player.anims.play('turn', true);
+      this.player.setVelocityX(0);
+      this.player.setVelocityY(0);
+      this.player.anims.play('turn', true);
     }
     
     game_data.coordinatesX = player.x;
